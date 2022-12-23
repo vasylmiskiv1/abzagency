@@ -1,7 +1,7 @@
 export const getFirstUsers = (
-  setUsers: any,
-  setIsLoadingUsers: any,
-  setTotalPages: any
+  setUsers: React.Dispatch<React.SetStateAction<User[]>>,
+  setIsLoadingUsers: React.Dispatch<React.SetStateAction<boolean>>,
+  setTotalPages: React.Dispatch<React.SetStateAction<number>>
 ) => {
   fetch(
     `${process.env.REACT_APP_USERS_API_URL}?page=1&count=${process.env.REACT_APP_USERS_QUANTITY}`
@@ -16,19 +16,49 @@ export const getFirstUsers = (
 };
 
 export const getUsersChunk = (
-  page: any,
-  setUsers: any,
-  setCurrentPage: any,
-  setIsLoadingUsers: any
+  page: number,
+  setUsers: React.Dispatch<React.SetStateAction<User[]>>,
+  setCurrentPage: React.Dispatch<React.SetStateAction<number>>,
+  setIsLoadingUsers: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
   fetch(
     `${process.env.REACT_APP_USERS_API_URL}?page=${page}&count=${process.env.REACT_APP_USERS_QUANTITY}`
   )
     .then((response) => response.json())
     .then((data) => {
-      setUsers((users: any) => [...users, ...data.users]);
-      setCurrentPage((currentPage: any) => currentPage + 1);
+      setUsers((users) => [...users, ...data.users]);
+      setCurrentPage((page: number) => page + 1);
     })
     .catch((error) => console.log(error))
     .finally(() => setIsLoadingUsers(false));
+};
+
+export const addUser = (
+  formData: FormData,
+  setIsShowedSuccess: React.Dispatch<React.SetStateAction<boolean>>,
+  setImage: React.Dispatch<React.SetStateAction<ImageFile | null | undefined>>,
+  setIsShowedLoader: React.Dispatch<React.SetStateAction<boolean>>,
+  resetForm: () => void,
+  onGetUsers: () => void
+) => {
+  fetch(`${process.env.REACT_APP_USERS_API_URL}`, {
+    method: "POST",
+    headers: {
+      Token: sessionStorage.getItem("abzagency_token") || "",
+    },
+    body: formData,
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.success) {
+        setIsShowedSuccess(true);
+        onGetUsers();
+        resetForm();
+        setImage(null);
+      }
+    })
+    .finally(() => {
+      setIsShowedLoader(false);
+    })
+    .catch((e) => console.log(e));
 };

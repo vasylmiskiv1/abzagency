@@ -7,9 +7,11 @@ import "yup-phone";
 import Button from "../components/Button";
 import { ReactComponent as SuccessImage } from "../assets/success-image.svg";
 
-const CreateUser = ({ onGetUsers }: any) => {
+import { addUser } from "../api/usersApi";
+
+const CreateUser = ({ onGetUsers }: CreateUserProps) => {
   const [image, setImage] = useState<ImageFile | null>();
-  const [positions, setPositions] = useState<any>([]);
+  const [positions, setPositions] = useState<PositionFromServer[]>([]);
   const [isFormNotCompleted, setIsFormNotCompleted] = useState(true);
   const [isShowedLoader, setIsShowedLoader] = useState(false);
   const [isShowedSuccess, setIsShowedSuccess] = useState(false);
@@ -31,38 +33,26 @@ const CreateUser = ({ onGetUsers }: any) => {
 
   const handleUplaodImage = (photo: ImageFile) => setImage(photo);
 
-  const handleSubmit = async (values: any, resetForm: any) => {
+  const handleSubmit = async (values: FormikValues, resetForm: () => void) => {
     setIsShowedLoader(true);
     const { name, email, phone, position } = values;
 
-    const formData: any = new FormData();
+    const formData = new FormData();
 
     formData.append("name", name);
     formData.append("email", email);
     formData.append("phone", phone);
-    formData.append("position_id", Number(position));
-    formData.append("photo", image);
+    formData.append("position_id", Number(position) as any);
+    formData.append("photo", image as any);
 
-    fetch(`${process.env.REACT_APP_USERS_API_URL}`, {
-      method: "POST",
-      headers: {
-        Token: sessionStorage.getItem("abzagency_token") || "",
-      },
-      body: formData,
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) {
-          setIsShowedSuccess(true);
-          onGetUsers();
-          resetForm();
-          setImage(null);
-        }
-      })
-      .finally(() => {
-        setIsShowedLoader(false);
-      })
-      .catch((e) => console.log(e));
+    addUser(
+      formData,
+      setIsShowedSuccess,
+      setImage,
+      setIsShowedLoader,
+      resetForm,
+      onGetUsers
+    );
   };
 
   const checkIfFilesAreTooBig = (): boolean => {
@@ -87,11 +77,11 @@ const CreateUser = ({ onGetUsers }: any) => {
         isValid = false;
       }
     }
+
     return isValid;
   };
 
-  const checkIsFormValid = (values: any) => {
-    console.log(values);
+  const checkIsFormValid = (values: FormikValues) => {
     const isFormNotCompleted = !Object.values(values).every((x) => x !== "");
     !isFormNotCompleted && setIsFormNotCompleted(false);
   };
@@ -244,31 +234,29 @@ const CreateUser = ({ onGetUsers }: any) => {
 
                 <div className="text-lg mt-8">Select your position</div>
                 {positions.length &&
-                  positions.map((position: any) => (
-                    <>
-                      <div className="text-lg mt-2 flex gap-3">
-                        <input
-                          id={`${position.name
-                            .replace(/\s+/g, "-")
-                            .toLowerCase()}-radio`}
-                          className="h-[18px] w-[18px] mt-1"
-                          type="radio"
-                          name="position"
-                          value={position.id.toString()}
-                          onChange={(e: any) => {
-                            handleChange(e);
-                            checkIsFormValid(values);
-                          }}
-                        />
-                        <label
-                          htmlFor={`${position.name
-                            .replace(/\s+/g, "-")
-                            .toLowerCase()}-radio`}
-                        >
-                          {position.name}
-                        </label>
-                      </div>
-                    </>
+                  positions.map((position: PositionFromServer) => (
+                    <div className="text-lg mt-2 flex gap-3" key={position.id}>
+                      <input
+                        id={`${position.name
+                          .replace(/\s+/g, "-")
+                          .toLowerCase()}-radio`}
+                        className="h-[18px] w-[18px] mt-1"
+                        type="radio"
+                        name="position"
+                        value={position.id.toString()}
+                        onChange={(e: React.FormEvent<HTMLInputElement>) => {
+                          handleChange(e);
+                          checkIsFormValid(values);
+                        }}
+                      />
+                      <label
+                        htmlFor={`${position.name
+                          .replace(/\s+/g, "-")
+                          .toLowerCase()}-radio`}
+                      >
+                        {position.name}
+                      </label>
+                    </div>
                   ))}
                 <p
                   className={`${
