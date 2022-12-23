@@ -12,10 +12,10 @@ const Header = () => {
           </div>
           <ul className="flex items-center gap-4">
             <li>
-              <Button type="link" text="Users" link="#users" />
+              <Button text="Users" link="#users" />
             </li>
             <li>
-              <Button type="link" text="Sign up" link="#create-user" />
+              <Button text="Sign up" link="#create-user" />
             </li>
           </ul>
         </nav>

@@ -1,3 +1,12 @@
+type ButtonProps = {
+  text?: string;
+  type?: "submit" | "reset" | "button";
+  link?: string;
+  disabled?: boolean;
+  onSubmit?: (e: React.FormEvent) => void;
+  onDownloadUsers?: () => void;
+}
+
 const Button = ({
   text,
   type,
@@ -5,7 +14,7 @@ const Button = ({
   disabled,
   onSubmit,
   onDownloadUsers,
-}: any) => {
+}: ButtonProps) => {
   const LinkButton = () => (
     <a
       href={link}
@@ -49,7 +58,7 @@ const Button = ({
     <>
       {type === "submit" && <SubmitFormButton />}
       {type === "button" && <GetUsersButton />}
-      {type === "link" && <LinkButton />}
+      {!type && <LinkButton />}
     </>
   );
 };

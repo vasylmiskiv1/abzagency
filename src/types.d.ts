@@ -7,6 +7,10 @@ interface User {
   photo: string;
 }
 
+interface ImageFile extends File {
+  lastModified: number;
+}
+
 type UserProps = {
   user: User;
 }
