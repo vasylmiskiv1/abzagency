@@ -9,11 +9,11 @@ const Main = () => {
           Test assignment for front-end developer
         </h1>
         <p className="text-lg mt-6 text-base xl:text-lg max-sm:text-center">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, aliquip ex ea commodo consequat. Duis aute irure dolor
-          in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur
+          What defines a good front-end developer is one that has skilled
+          knowledge of HTML, CSS, JS with a vast understanding of User design
+          thinking as they'll be building web interfaces with accessibility in
+          mind. They should also be excited to learn, as the world of Front-End
+          Development keeps evolving.
         </p>
         <div className="mt-10">
           <Button type="link" text="Sign In" link="#create-user" />
