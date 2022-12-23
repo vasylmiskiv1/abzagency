@@ -7,10 +7,6 @@ import "yup-phone";
 import Button from "../components/Button";
 import { ReactComponent as SuccessImage } from "../assets/success-image.svg";
 
-interface ImageFile extends File {
-  lastModified: number;
-}
-
 const CreateUser = ({ onGetUsers }: any) => {
   const [image, setImage] = useState<ImageFile | null>();
   const [positions, setPositions] = useState<any>([]);
@@ -327,10 +323,9 @@ const CreateUser = ({ onGetUsers }: any) => {
                 <Button
                   text="Sign up"
                   type="submit"
-                  onSubmit={(e: any) => {
+                  onSubmit={(e: React.FormEvent) => {
                     e.preventDefault();
                     handleSubmit();
-                    console.log(errors);
                   }}
                   disabled={isFormNotCompleted}
                 />
