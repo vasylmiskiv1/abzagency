@@ -23,6 +23,10 @@ interface ImageFile extends File {
   lastModified: number;
 }
 
+interface ContainerProps {
+  children: React.ReactNode;
+}
+
 type UserProps = {
   user: User;
 }
