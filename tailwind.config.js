@@ -9,7 +9,7 @@ module.exports = {
         "secondary": "#0891b2",
         "background": "#f8fafc",
         "dark": "#18181b",
-        "input-border": "#a1a1aa",
+        "input-border": "#bdbdbd",
         "disabled": "#a8a29e",
         "error": "#dc2626"
       },
