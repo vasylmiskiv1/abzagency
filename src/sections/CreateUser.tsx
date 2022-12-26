@@ -105,7 +105,7 @@ const CreateUser = ({ onGetUsers }: CreateUserProps) => {
   });
 
   return (
-    <div className="pt-36 pb-32">
+    <div className="pt-36 pb-20">
       <h1 className="text-5xl text-center max-sm:px-10">
         Working with POST request
       </h1>
@@ -181,7 +181,7 @@ const CreateUser = ({ onGetUsers }: CreateUserProps) => {
                   </p>
                 </>
               ) : (
-                <form id="create-user" className="flex flex-col w-full px-4">
+                <form id="create-user" className="flex flex-col w-full px-4 py-8">
                   <TextField
                     label="Your name"
                     name="name"
@@ -259,7 +259,7 @@ const CreateUser = ({ onGetUsers }: CreateUserProps) => {
                     {errors.phone}
                   </p>
 
-                  <div className="text-lg mt-8">Select your position</div>
+                  <div className="text-lg mt-4">Select your position</div>
                   {positions.length &&
                     positions.map((position: PositionFromServer) => (
                       <div
@@ -295,10 +295,10 @@ const CreateUser = ({ onGetUsers }: CreateUserProps) => {
                         : `invisible`
                     } h-8`}
                   >
-                    {errors.position && errors.position}
+                    {errors.position}
                   </p>
 
-                  <div className="mt-8 flex">
+                  <div className="mt-4 flex">
                     <input
                       type="file"
                       className="hidden"
