@@ -14,11 +14,12 @@ import { addUser } from "../api/usersApi";
 
 import Button from "../components/Button";
 import { ReactComponent as SuccessImage } from "../assets/success-image.svg";
+import { addCheckedStatus } from "../helpers/buttonsStatus";
 
 const CreateUser = ({ onGetUsers }: CreateUserProps) => {
   const [image, setImage] = useState<ImageFile | null>();
   const [imageError, setImageError] = useState("");
-  const [positions, setPositions] = useState<PositionFromServer[]>([]);
+  const [positions, setPositions] = useState<PositionToUpdate[]>([]);
   const [isFormNotCompleted, setIsFormNotCompleted] = useState(true);
   const [isShowedLoader, setIsShowedLoader] = useState(false);
   const [isShowedSuccess, setIsShowedSuccess] = useState(false);
@@ -26,7 +27,10 @@ const CreateUser = ({ onGetUsers }: CreateUserProps) => {
   useEffect(() => {
     fetch(`${process.env.REACT_APP_POSITIONS_API_URL}`)
       .then((res) => res.json())
-      .then((data) => setPositions(data.positions))
+      .then((data) => {
+        const positions = addCheckedStatus(data.positions);
+        setPositions(positions);
+      })
       .catch((err) => console.log(err));
   }, []);
 
@@ -83,6 +87,15 @@ const CreateUser = ({ onGetUsers }: CreateUserProps) => {
   const checkIsFormValid = (values: FormikValues) => {
     const isFormNotCompleted = !Object.values(values).every((x) => x !== "");
     !isFormNotCompleted && setIsFormNotCompleted(false);
+  };
+
+  const setRadioButtonChecked = (id: number) => {
+    const setRadioChecked = positions.map((position) =>
+      position.id === id
+        ? { ...position, isChecked: true }
+        : { ...position, isChecked: false }
+    );
+    setPositions(setRadioChecked);
   };
 
   const validationSchema = yup.object().shape({
@@ -181,7 +194,10 @@ const CreateUser = ({ onGetUsers }: CreateUserProps) => {
                   </p>
                 </>
               ) : (
-                <form id="create-user" className="flex flex-col w-full px-4 py-8">
+                <form
+                  id="create-user"
+                  className="flex flex-col w-full px-4 py-8"
+                >
                   <TextField
                     label="Your name"
                     name="name"
@@ -261,7 +277,7 @@ const CreateUser = ({ onGetUsers }: CreateUserProps) => {
 
                   <div className="text-lg mt-4">Select your position</div>
                   {positions.length &&
-                    positions.map((position: PositionFromServer) => (
+                    positions.map((position: PositionToUpdate) => (
                       <div
                         className="text-lg mt-2 flex gap-3"
                         key={position.id}
@@ -270,11 +286,13 @@ const CreateUser = ({ onGetUsers }: CreateUserProps) => {
                           id={`${position.name
                             .replace(/\s+/g, "-")
                             .toLowerCase()}-radio`}
+                          checked={position.isChecked}
                           className="h-[18px] w-[18px] mt-1"
                           type="radio"
                           name="position"
                           value={position.id.toString()}
                           onChange={(e: React.FormEvent<HTMLInputElement>) => {
+                            setRadioButtonChecked(position.id);
                             handleChange(e);
                             checkIsFormValid(values);
                           }}

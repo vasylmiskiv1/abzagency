@@ -11,6 +11,10 @@ interface PositionFromServer {
   id: number;
   name: string;
 }
+
+interface PositionToUpdate extends PositionFromServer {
+  isChecked: boolean;
+}
 interface FormikValues {
     name: string;
     email: string,
