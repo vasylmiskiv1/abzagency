@@ -16,7 +16,7 @@ import Button from "../components/Button";
 import { ReactComponent as SuccessImage } from "../assets/success-image.svg";
 import { addCheckedStatus } from "../helpers/buttonsStatus";
 
-const CreateUser = ({ onGetUsers }: CreateUserProps) => {
+const CreateUser = ({ onUpdateUsers }: CreateUserProps) => {
   const [image, setImage] = useState<ImageFile | null>();
   const [imageError, setImageError] = useState("");
   const [positions, setPositions] = useState<PositionToUpdate[]>([]);
@@ -80,7 +80,7 @@ const CreateUser = ({ onGetUsers }: CreateUserProps) => {
       setImage,
       setIsShowedLoader,
       resetForm,
-      onGetUsers
+      onUpdateUsers
     );
   };
 

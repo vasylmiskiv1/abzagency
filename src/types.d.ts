@@ -40,7 +40,7 @@ type TooltipProps = {
 }
 
 type CreateUserProps = {
-  onGetUsers: () => void;
+  onUpdateUsers: () => void;
 }
 
 type ButtonProps = {
@@ -52,6 +52,6 @@ type ButtonProps = {
   onDownloadUsers?: () => void;
 }
 
-type ContainerProps = {
-  children: React.ReactNode;
+type SpinnerProps = {
+  usersLength: number;
 }

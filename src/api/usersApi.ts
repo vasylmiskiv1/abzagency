@@ -3,6 +3,8 @@ export const getFirstUsers = (
   setIsLoadingUsers: React.Dispatch<React.SetStateAction<boolean>>,
   setTotalPages: React.Dispatch<React.SetStateAction<number>>
 ) => {
+  setIsLoadingUsers(true);
+
   fetch(
     `${process.env.REACT_APP_USERS_API_URL}?page=1&count=${process.env.REACT_APP_USERS_QUANTITY}`
   )
@@ -21,6 +23,8 @@ export const getUsersChunk = (
   setCurrentPage: React.Dispatch<React.SetStateAction<number>>,
   setIsLoadingUsers: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
+  setIsLoadingUsers(true);
+
   fetch(
     `${process.env.REACT_APP_USERS_API_URL}?page=${page}&count=${process.env.REACT_APP_USERS_QUANTITY}`
   )
@@ -39,7 +43,7 @@ export const addUser = (
   setImage: React.Dispatch<React.SetStateAction<ImageFile | null | undefined>>,
   setIsShowedLoader: React.Dispatch<React.SetStateAction<boolean>>,
   resetForm: () => void,
-  onGetUsers: () => void
+  onUpdateUsers: () => void
 ) => {
   fetch(`${process.env.REACT_APP_USERS_API_URL}`, {
     method: "POST",
@@ -52,7 +56,7 @@ export const addUser = (
     .then((data) => {
       if (data.success) {
         setIsShowedSuccess(true);
-        onGetUsers();
+        onUpdateUsers();
         resetForm();
         setImage(null);
       }
