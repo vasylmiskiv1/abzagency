@@ -66,3 +66,15 @@ export const addUser = (
     })
     .catch((e) => console.log(e));
 };
+
+export const isUserImageValid = (
+  imageUrl: string,
+  setIsImageValid: React.Dispatch<React.SetStateAction<boolean>>
+) => {
+  fetch(imageUrl).then((res) => {
+    if (res.status === 200) {
+      setIsImageValid(true);
+    }
+    return;
+  });
+};
