@@ -269,8 +269,8 @@ const CreateUser = ({ onUpdateUsers }: CreateUserProps) => {
                     className={`mt-1 ${
                       errors.phone && (values.phone.length || touched.phone)
                         ? `text-error`
-                        : `text-disabled`
-                    } h-8 px-4 text-xs`}
+                        : `text-disabled text-xs`
+                    } h-8 px-4 text-sm`}
                   >
                     {errors.phone && (values.phone.length || touched.phone)
                       ? errors.phone
