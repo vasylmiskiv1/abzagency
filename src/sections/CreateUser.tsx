@@ -7,8 +7,9 @@ import { TextField } from "@mui/material";
 import { grey, red } from "@mui/material/colors";
 
 import {
-  checkIfFilesAreCorrectType,
+  checkIfFileIsCorrectType,
   checkIfFileIsTooBig,
+  checkIfImageSizeIsValid,
 } from "../helpers/photoValidation";
 import { addUser } from "../api/usersApi";
 
@@ -18,7 +19,7 @@ import { addCheckedStatus } from "../helpers/buttonsStatus";
 
 const CreateUser = ({ onUpdateUsers }: CreateUserProps) => {
   const [image, setImage] = useState<ImageFile | null>();
-  const [imageError, setImageError] = useState("");
+  const [imageError, setImageError] = useState<any>("");
   const [positions, setPositions] = useState<PositionToUpdate[]>([]);
   const [isFormNotCompleted, setIsFormNotCompleted] = useState(true);
   const [isShowedLoader, setIsShowedLoader] = useState(false);
@@ -43,10 +44,7 @@ const CreateUser = ({ onUpdateUsers }: CreateUserProps) => {
   }, [isShowedSuccess]);
 
   useEffect(() => {
-    const ImageValidationList = [
-      checkIfFilesAreCorrectType,
-      checkIfFileIsTooBig,
-    ];
+    const ImageValidationList = [checkIfFileIsCorrectType, checkIfFileIsTooBig];
 
     if (image) {
       for (const validation of ImageValidationList) {
@@ -85,7 +83,9 @@ const CreateUser = ({ onUpdateUsers }: CreateUserProps) => {
   };
 
   const checkIsFormValid = (values: FormikValues) => {
-    const isFormNotCompleted = !Object.values(values).every((x) => x !== "");
+    const isFormNotCompleted = !Object.values(values).every(
+      (input) => input !== ""
+    );
     !isFormNotCompleted && setIsFormNotCompleted(false);
   };
 
@@ -127,7 +127,7 @@ const CreateUser = ({ onUpdateUsers }: CreateUserProps) => {
           name: "",
           email: "",
           phone: "",
-          position: "",
+          position: "1",
           photo: "",
         }}
         validateOnChange
@@ -215,7 +215,7 @@ const CreateUser = ({ onUpdateUsers }: CreateUserProps) => {
                     defaultValue={values.name}
                   />
                   <p
-                    className={`${
+                    className={`mt-1 ${
                       errors.name && (values.name.length || touched.name)
                         ? `visible text-error`
                         : `invisible`
@@ -240,7 +240,7 @@ const CreateUser = ({ onUpdateUsers }: CreateUserProps) => {
                     defaultValue={values.email}
                   />
                   <p
-                    className={`${
+                    className={`mt-1 ${
                       errors.email && (values.email.length || touched.email)
                         ? `visible text-error`
                         : `invisible`
@@ -266,57 +266,52 @@ const CreateUser = ({ onUpdateUsers }: CreateUserProps) => {
                     defaultValue={values.phone}
                   />
                   <p
-                    className={`${
+                    className={`mt-1 ${
                       errors.phone && (values.phone.length || touched.phone)
-                        ? `visible text-error`
-                        : `invisible`
-                    } h-8 px-4 text-sm`}
+                        ? `text-error`
+                        : `text-disabled`
+                    } h-8 px-4 text-xs`}
                   >
-                    {errors.phone}
+                    {errors.phone && (values.phone.length || touched.phone)
+                      ? errors.phone
+                      : `+38 (XXX) XXX - XX - XX`}
                   </p>
 
                   <div className="text-lg mt-4">Select your position</div>
-                  {positions.length &&
-                    positions.map((position: PositionToUpdate) => (
-                      <div
-                        className="text-lg mt-2 flex gap-3"
-                        key={position.id}
-                      >
-                        <input
-                          id={`${position.name
-                            .replace(/\s+/g, "-")
-                            .toLowerCase()}-radio`}
-                          checked={position.isChecked}
-                          className="h-[18px] w-[18px] mt-1"
-                          type="radio"
-                          name="position"
-                          value={position.id.toString()}
-                          onChange={(e: React.FormEvent<HTMLInputElement>) => {
-                            setRadioButtonChecked(position.id);
-                            handleChange(e);
-                            checkIsFormValid(values);
-                          }}
-                        />
-                        <label
-                          htmlFor={`${position.name
-                            .replace(/\s+/g, "-")
-                            .toLowerCase()}-radio`}
+                  {positions.length
+                    ? positions.map((position: PositionToUpdate) => (
+                        <div
+                          className="text-lg mt-2 flex gap-3"
+                          key={position.id}
                         >
-                          {position.name}
-                        </label>
-                      </div>
-                    ))}
-                  <p
-                    className={`${
-                      errors.position && touched.position
-                        ? `visible text-error`
-                        : `invisible`
-                    } h-8`}
-                  >
-                    {errors.position}
-                  </p>
+                          <input
+                            id={`${position.name
+                              .replace(/\s+/g, "-")
+                              .toLowerCase()}-radio`}
+                            checked={position.isChecked}
+                            className="h-[18px] w-[18px] mt-1"
+                            type="radio"
+                            name="position"
+                            value={position.id.toString()}
+                            onChange={(
+                              e: React.FormEvent<HTMLInputElement>
+                            ) => {
+                              setRadioButtonChecked(position.id);
+                              handleChange(e);
+                            }}
+                          />
+                          <label
+                            htmlFor={`${position.name
+                              .replace(/\s+/g, "-")
+                              .toLowerCase()}-radio`}
+                          >
+                            {position.name}
+                          </label>
+                        </div>
+                      ))
+                    : null}
 
-                  <div className="mt-4 flex">
+                  <div className="mt-12 flex">
                     <input
                       type="file"
                       className="hidden"
@@ -326,6 +321,10 @@ const CreateUser = ({ onUpdateUsers }: CreateUserProps) => {
                       onChange={(e) => {
                         if (e.target.files) {
                           handleUplaodImage(e.target.files[0]);
+                          checkIfImageSizeIsValid(
+                            e.target.files[0],
+                            setImageError
+                          );
                           values.photo = e.target.files[0].name;
                         }
                         checkIsFormValid(values);
@@ -353,7 +352,7 @@ const CreateUser = ({ onUpdateUsers }: CreateUserProps) => {
                       readOnly
                     />
                   </div>
-                  <p className="h-8 text-red-500">{imageError}</p>
+                  <p className="h-8 px-4 text-sm text-error">{imageError}</p>
                   <Button
                     text="Sign up"
                     type="submit"

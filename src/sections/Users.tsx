@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import getToken from "../api/tokenApi";
+import { getToken } from "../api/tokenApi";
 import { getFirstUsers, getUsersChunk } from "../api/usersApi";
 
 import Button from "../components/Button";

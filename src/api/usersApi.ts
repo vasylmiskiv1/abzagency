@@ -1,3 +1,6 @@
+import { toast } from 'react-toastify';
+import { getToken } from './tokenApi';
+
 export const getFirstUsers = (
   setUsers: React.Dispatch<React.SetStateAction<User[]>>,
   setIsLoadingUsers: React.Dispatch<React.SetStateAction<boolean>>,
@@ -30,10 +33,14 @@ export const getUsersChunk = (
   )
     .then((response) => response.json())
     .then((data) => {
-      setUsers((users) => [...users, ...data.users]);
-      setCurrentPage((page: number) => page + 1);
+      if (data.success) {
+        setUsers((users) => [...users, ...data.users]);
+        setCurrentPage((page: number) => page + 1);
+      } else {
+        toast(data.message)
+      }
     })
-    .catch((error) => console.log(error))
+    .catch((error) => toast(error.message))
     .finally(() => setIsLoadingUsers(false));
 };
 
@@ -59,12 +66,19 @@ export const addUser = (
         onUpdateUsers();
         resetForm();
         setImage(null);
+      } else {
+        if (data.message.toLowerCase().includes("invalid token")) {
+          const isTokenExpired = true;
+          getToken(isTokenExpired);
+        } else {
+          toast(data.message);
+        }
       }
     })
+    .catch((error) => toast(error.message))
     .finally(() => {
       setIsShowedLoader(false);
     })
-    .catch((e) => console.log(e));
 };
 
 export const isUserImageValid = (
@@ -75,6 +89,5 @@ export const isUserImageValid = (
     if (res.status === 200) {
       setIsImageValid(true);
     }
-    return;
   });
 };

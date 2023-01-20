@@ -1,12 +1,3 @@
-type ButtonProps = {
-  text?: string;
-  type?: "submit" | "reset" | "button";
-  link?: string;
-  disabled?: boolean;
-  onSubmit?: (e: React.FormEvent) => void;
-  onDownloadUsers?: () => void;
-}
-
 const Button = ({
   text,
   type,

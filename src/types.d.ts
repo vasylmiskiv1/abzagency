@@ -27,7 +27,7 @@ interface ImageFile extends File {
   lastModified: number;
 }
 
-interface ContainerProps {
+type ContainerProps = {
   children: React.ReactNode;
 }
 
@@ -55,3 +55,4 @@ type ButtonProps = {
 type SpinnerProps = {
   usersLength: number;
 }
+
