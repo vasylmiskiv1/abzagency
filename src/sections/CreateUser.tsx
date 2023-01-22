@@ -196,7 +196,7 @@ const CreateUser = ({ onUpdateUsers }: CreateUserProps) => {
               ) : (
                 <form
                   id="create-user"
-                  className="flex flex-col w-full px-4 py-8"
+                  className="flex flex-col w-full px-7 py-8"
                 >
                   <TextField
                     label="Your name"
